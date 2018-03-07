@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">FRC Scouting</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string-array name="navigation_drawer_items_array">
+        <item>Schedule</item>
+        <item>Pit Scouting</item>
+        <item>Rankings</item>
+    </string-array>
 </resources>
