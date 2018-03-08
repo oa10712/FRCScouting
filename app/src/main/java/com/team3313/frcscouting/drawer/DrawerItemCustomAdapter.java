@@ -1,4 +1,4 @@
-package com.team3313.frcscouting;
+package com.team3313.frcscouting.drawer;
 
 /**
  * Created by oa10712 on 3/7/2018.
@@ -7,6 +7,7 @@ package com.team3313.frcscouting;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.team3313.frcscouting.R;
+
 public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
 
-    Context mContext;
-    int layoutResourceId;
-    DataModel data[] = null;
+    private Context mContext;
+    private int layoutResourceId;
+    private DataModel data[] = null;
 
     public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, DataModel[] data) {
 
@@ -28,8 +31,9 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
         this.data = data;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         View listItem = convertView;
 
@@ -41,8 +45,7 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
 
         DataModel folder = data[position];
 
-
-        imageViewIcon.setImageResource(folder.icon);
+//        imageViewIcon.setImageResource(folder.icon);
         textViewName.setText(folder.name);
 
         return listItem;

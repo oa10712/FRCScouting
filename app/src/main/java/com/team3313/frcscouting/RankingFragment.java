@@ -1,4 +1,4 @@
-package com.team3313.frcscouting.drawer;
+package com.team3313.frcscouting;
 
 /**
  * Created by oa10712 on 3/7/2018.
@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.team3313.frcscouting.R;
 
 public class RankingFragment extends Fragment {
 
@@ -20,9 +19,7 @@ public class RankingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_ranking, container, false);
-
-        return rootView;
+        return inflater.inflate(R.layout.fragment_ranking, container, false);
     }
 
 }
