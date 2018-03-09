@@ -30,12 +30,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-
     public static String regional;
     public static JSONArray matchData;
     public static JSONObject config;
+    public static MainActivity instance;
     Toolbar toolbar;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
     private String[] mNavigationDrawerItemTitles;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         setupDrawerToggle();
-
+        instance = this;
     }
 
     private void selectItem(int position) {
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
-            // setTitle(mNavigationDrawerItemTitles[position]);
+            setTitle(mNavigationDrawerItemTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
 
         } else {
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         String configString = readFromFile("config.json");
-        if (configString != "") {
+        if (!Objects.equals(configString, "")) {
             try {
                 config = new JSONObject(configString);
             } catch (JSONException e) {
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             config = new JSONObject();
         }
         String matches = readFromFile("regional-matches.json");
-        if (matches != "") {
+        if (!Objects.equals(matches, "")) {
             try {
                 matchData = new JSONArray(matches);
             } catch (JSONException e) {
@@ -223,6 +224,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return ret;
+    }
+
+    public void saveConfig() {
+        writeToFile(config.toString(), "config.json");
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
