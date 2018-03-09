@@ -22,7 +22,7 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     public static String regional;
-    public static JSONObject matchData;
+    public static JSONArray matchData;
     Toolbar toolbar;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
     private String[] mNavigationDrawerItemTitles;
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
-            setTitle(mNavigationDrawerItemTitles[position]);
+            // setTitle(mNavigationDrawerItemTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
 
         } else {
@@ -111,19 +111,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //this one reads matches from the ndgf regional
-        RESTGetter.HttpRequestTask task = new RESTGetter.HttpRequestTask("https://www.team3313.com/api/schedule/read_regional.php?regional=2018ndgf") {
+        RESTGetter.HttpRequestTask task = new RESTGetter.HttpRequestTask("https://www.team3313.com/api/schedule/read_regional.php?regional=" + getActiveRegional()) {
             @Override
             protected void customEnd(JSONObject r) {
-                matchData = r;
                 try {
-                    regional = "";
-                    JSONArray matches = r.getJSONArray("records");
-                    for (int i = 0; i < matches.length(); i++) {
-
-                        regional += matches.getJSONObject(i).getString("match_id") + "\n";
-                    }
+                    matchData = r.getJSONArray("records");
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    matchData = new JSONArray();
                 }
             }
         };
@@ -146,6 +141,10 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
         //This is necessary to change the icon of the Drawer Toggle upon state change.
         mDrawerToggle.syncState();
+    }
+
+    public String getActiveRegional() {
+        return "2018ndgf";
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
