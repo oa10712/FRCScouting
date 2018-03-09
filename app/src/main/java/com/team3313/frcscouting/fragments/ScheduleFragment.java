@@ -1,4 +1,4 @@
-package com.team3313.frcscouting;
+package com.team3313.frcscouting.fragments;
 
 /**
  * Created by oa10712 on 3/7/2018.
@@ -19,6 +19,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.team3313.frcscouting.MainActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,8 +31,15 @@ public class ScheduleFragment extends Fragment {
     TableLayout tableLayout;
     TextView textView;
     Button button;
+    View.OnClickListener teamClick;
 
     public ScheduleFragment() {
+        teamClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().setTitle("Schedule for " + ((MainActivity) getActivity()).getActiveRegional() + " : " + ((TextView) v).getText());
+            }
+        };
     }
 
     @Override
@@ -84,40 +93,47 @@ public class ScheduleFragment extends Fragment {
                     JSONObject match = MainActivity.matchData.getJSONObject(i);
 
                     TableRow matchRow = new TableRow(getActivity());
+                    matchRow.setMinimumHeight(75);
 
                     TextView matchName = new TextView(getActivity());
                     matchName.setText(match.getString("match_id"));
                     matchRow.addView(matchName);
-                    matchName.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            getActivity().setTitle("Schedule for " + ((MainActivity) getActivity()).getActiveRegional() + " : " + ((TextView) v).getText());
-                        }
-                    });
 
                     TextView red1 = new TextView(getActivity());
                     red1.setText(match.getString("red1"));
+                    red1.setMinWidth(150);
                     matchRow.addView(red1);
+                    red1.setOnClickListener(teamClick);
 
                     TextView red2 = new TextView(getActivity());
                     red2.setText(match.getString("red2"));
+                    red2.setMinWidth(150);
                     matchRow.addView(red2);
+                    red2.setOnClickListener(teamClick);
 
                     TextView red3 = new TextView(getActivity());
                     red3.setText(match.getString("red3"));
+                    red3.setMinWidth(150);
                     matchRow.addView(red3);
+                    red3.setOnClickListener(teamClick);
 
                     TextView blue1 = new TextView(getActivity());
                     blue1.setText(match.getString("blue1"));
+                    blue1.setMinWidth(150);
                     matchRow.addView(blue1);
+                    blue1.setOnClickListener(teamClick);
 
                     TextView blue2 = new TextView(getActivity());
                     blue2.setText(match.getString("blue2"));
+                    blue2.setMinWidth(150);
                     matchRow.addView(blue2);
+                    blue2.setOnClickListener(teamClick);
 
                     TextView blue3 = new TextView(getActivity());
                     blue3.setText(match.getString("blue3"));
+                    blue3.setMinWidth(150);
                     matchRow.addView(blue3);
+                    blue3.setOnClickListener(teamClick);
 
                     tableLayout.addView(matchRow);
                 }

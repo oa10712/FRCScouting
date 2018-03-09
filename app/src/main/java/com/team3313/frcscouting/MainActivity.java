@@ -1,5 +1,6 @@
 package com.team3313.frcscouting;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,15 +15,27 @@ import android.widget.ListView;
 
 import com.team3313.frcscouting.drawer.DataModel;
 import com.team3313.frcscouting.drawer.DrawerItemCustomAdapter;
+import com.team3313.frcscouting.fragments.PitScoutingFragment;
+import com.team3313.frcscouting.fragments.RankingFragment;
+import com.team3313.frcscouting.fragments.ScheduleFragment;
+import com.team3313.frcscouting.fragments.SettingsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
 public class MainActivity extends AppCompatActivity {
 
     public static String regional;
     public static JSONArray matchData;
+    public static JSONObject config;
     Toolbar toolbar;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
     private String[] mNavigationDrawerItemTitles;
@@ -44,11 +57,12 @@ public class MainActivity extends AppCompatActivity {
 
         setupToolbar();
 
-        DataModel[] drawerItem = new DataModel[3];
+        DataModel[] drawerItem = new DataModel[4];
 
         drawerItem[0] = new DataModel(R.drawable.ic_schedule, "Schedule");
         drawerItem[1] = new DataModel(R.drawable.ic_scouting, "Pit Scouting");
         drawerItem[2] = new DataModel(R.drawable.ic_rankings, "Rankings");
+        drawerItem[3] = new DataModel(R.drawable.ic_menu_manage, "Settings");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -74,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 2:
                 fragment = new RankingFragment();
+                break;
+            case 3:
+                fragment = new SettingsFragment();
                 break;
 
             default:
@@ -110,19 +127,41 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //this one reads matches from the ndgf regional
-        RESTGetter.HttpRequestTask task = new RESTGetter.HttpRequestTask("https://www.team3313.com/api/schedule/read_regional.php?regional=" + getActiveRegional()) {
-            @Override
-            protected void customEnd(JSONObject r) {
-                try {
-                    matchData = r.getJSONArray("records");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    matchData = new JSONArray();
-                }
+        String configString = readFromFile("config.json");
+        if (configString != "") {
+            try {
+                config = new JSONObject(configString);
+            } catch (JSONException e) {
+                config = new JSONObject();
+                e.printStackTrace();
             }
-        };
-        task.execute();
+        } else {
+            config = new JSONObject();
+        }
+        String matches = readFromFile("regional-matches.json");
+        if (matches != "") {
+            try {
+                matchData = new JSONArray(matches);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                matchData = new JSONArray();
+            }
+        } else {
+            //this one reads matches from the ndgf regional
+            RESTGetter.HttpRequestTask task = new RESTGetter.HttpRequestTask("https://www.team3313.com/api/schedule/read_regional.php?regional=" + getActiveRegional()) {
+                @Override
+                protected void customEnd(JSONObject r) {
+                    try {
+                        matchData = r.getJSONArray("records");
+                        writeToFile(matchData.toString(), "regional-matches.json");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        matchData = new JSONArray();
+                    }
+                }
+            };
+            task.execute();
+        }
     }
 
     @Override
@@ -147,6 +186,45 @@ public class MainActivity extends AppCompatActivity {
         return "2018ndgf";
     }
 
+    private void writeToFile(String data, String filename) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput(filename, Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+    private String readFromFile(String filename) {
+
+        String ret = "";
+
+        try {
+            InputStream inputStream = openFileInput(filename);
+
+            if (inputStream != null) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ((receiveString = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        return ret;
+    }
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
         @Override
@@ -155,5 +233,4 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 }
