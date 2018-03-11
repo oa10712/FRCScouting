@@ -7,6 +7,7 @@ package com.team3313.frcscouting.fragments;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.team3313.frcscouting.DataStore;
 import com.team3313.frcscouting.MainActivity;
+import com.team3313.frcscouting.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +40,8 @@ public class ScheduleFragment extends Fragment {
         teamClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().setTitle("Schedule for " + ((MainActivity) getActivity()).getActiveRegional() + " : " + ((TextView) v).getText());
+                FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, TeamDataFragment.newInstance((String) ((TextView) v).getText())).commit();
             }
         };
     }
@@ -52,10 +56,10 @@ public class ScheduleFragment extends Fragment {
         textView = this.textView();
         button = this.button();
 
-        // ADD VIEWs TO linearLayout
+        // ADD VIEWs TO topLayout
 
         try {
-            if (MainActivity.matchData.length() != 0) {
+            if (DataStore.matchData.length() != 0) {
                 tableLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
                 TableRow header = new TableRow(getActivity());
 
@@ -89,8 +93,8 @@ public class ScheduleFragment extends Fragment {
 
                 tableLayout.addView(header);
 
-                for (int i = 0; i < MainActivity.matchData.length(); i++) {
-                    JSONObject match = MainActivity.matchData.getJSONObject(i);
+                for (int i = 0; i < DataStore.matchData.length(); i++) {
+                    JSONObject match = DataStore.matchData.getJSONObject(i);
 
                     TableRow matchRow = new TableRow(getActivity());
                     matchRow.setMinimumHeight(75);
@@ -149,7 +153,7 @@ public class ScheduleFragment extends Fragment {
         linearLayout.addView(relativeLayout);
 
         scrollView.addView(linearLayout);
-        // SET linearLayout AS CONTENT VIEW
+        // SET topLayout AS CONTENT VIEW
 
         return scrollView;
     }

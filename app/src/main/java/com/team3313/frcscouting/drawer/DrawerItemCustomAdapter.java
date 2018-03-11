@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,20 +35,26 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        if (position != 4) {
+            View listItem = convertView;
 
-        View listItem = convertView;
+            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+            listItem = inflater.inflate(layoutResourceId, parent, false);
 
-        LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-        listItem = inflater.inflate(layoutResourceId, parent, false);
+            ImageView imageViewIcon = (ImageView) listItem.findViewById(R.id.imageViewIcon);
+            TextView textViewName = (TextView) listItem.findViewById(R.id.textViewName);
 
-        ImageView imageViewIcon = (ImageView) listItem.findViewById(R.id.imageViewIcon);
-        TextView textViewName = (TextView) listItem.findViewById(R.id.textViewName);
-
-        DataModel folder = data[position];
+            DataModel folder = data[position];
 
 //        imageViewIcon.setImageResource(folder.icon);
-        textViewName.setText(folder.name);
+            textViewName.setText(folder.name);
 
-        return listItem;
+            return listItem;
+        } else {
+            AutoCompleteTextView complete = new AutoCompleteTextView(getContext());
+            String[] teams = new String[]{"Mechatronics", "3313"};
+            complete.setAdapter(new ArrayAdapter<String>(getContext(), R.layout.list_item, teams));
+            return complete;
+        }
     }
 }

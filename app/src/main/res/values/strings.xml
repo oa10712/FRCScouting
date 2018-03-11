@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">FRC Scouting</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Regional Scouting App</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -20,4 +20,5 @@
         <item>Blue 2</item>
         <item>Blue 3</item>
     </string-array>
+
 </resources>

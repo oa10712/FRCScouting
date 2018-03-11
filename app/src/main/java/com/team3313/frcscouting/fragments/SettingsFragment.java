@@ -20,7 +20,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.team3313.frcscouting.MainActivity;
+import com.team3313.frcscouting.DataStore;
 import com.team3313.frcscouting.R;
 
 import org.json.JSONException;
@@ -55,7 +55,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
         try {
-            spinner.setSelection(MainActivity.config.getInt("station"));
+            spinner.setSelection(DataStore.config.getInt("station"));
         } catch (JSONException e) {
         }
         stationRow.addView(spinner);
@@ -68,7 +68,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         apiKey = new EditText(getContext());
         apiKey.setWidth(300);
         try {
-            apiKey.setText(MainActivity.config.getString("apiKey"));
+            apiKey.setText(DataStore.config.getString("apiKey"));
         } catch (JSONException e) {
             apiKey.setText("");
         }
@@ -81,8 +81,8 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
             @Override
             public void onClick(View v) {
                 try {
-                    MainActivity.config.put("apiKey", apiKey.getText().toString());
-                    MainActivity.instance.saveConfig();
+                    DataStore.config.put("apiKey", apiKey.getText().toString());
+                    DataStore.saveConfig();
                     Toast.makeText(getContext(), "Config Saved", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                 }
@@ -101,7 +101,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
         try {
-            MainActivity.config.put("station", pos);
+            DataStore.config.put("station", pos);
         } catch (JSONException e) {
             e.printStackTrace();
         }
