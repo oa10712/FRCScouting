@@ -2,6 +2,7 @@ package com.team3313.frcscouting;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +47,7 @@ public class DataStore {
             }
         } else {
             //this one reads matches from the ndgf regional
-            RESTGetter.HttpRequestTask task = new RESTGetter.HttpRequestTask("https://www.team3313.com/api/schedule/read_regional.php?regional=" + MainActivity.instance.getActiveRegional()) {
+            RESTGetter.HttpsRequestTask task = new RESTGetter.HttpsRequestTask("https://www.team3313.com/api/schedule/read_regional.php?regional=" + MainActivity.instance.getActiveRegional()) {
                 @Override
                 protected void customEnd(JSONObject r) {
                     try {
@@ -69,23 +70,49 @@ public class DataStore {
                 e.printStackTrace();
             }
         } else {
-            RESTGetter.HttpRequestTask task = new RESTGetter.HttpRequestTask("https://thebluealliance.com/api/v3/event/" + MainActivity.instance.getActiveRegional() + "/teams/keys") {
+            RESTGetter.HttpRequestTaskArray task = new RESTGetter.HttpRequestTaskArray("http://thebluealliance.com/api/v3/event/" + MainActivity.instance.getActiveRegional() + "/teams/keys") {
                 @Override
-                protected void customEnd(JSONObject r) {
-                    System.out.printf("Writing to log");
+                protected void customEnd(JSONArray r) {
+                    System.out.println("Teams.json was empty");
                     System.out.println(r.toString());
                 }
             };
-            task.execute();
+            task.execute("X-TBA-Auth-Key:IdxoRao9PllsmPXPcOq9lcNU3o3zQAN6Tg3gflC9VCw1Wvj4pfqzV1Gmfiks0T9o");
         }
-        RESTGetter.HttpSubmitTask t = new RESTGetter.HttpSubmitTask("https://www.team3313.com/api/echo.php", matchData.toString()) {
+
+        RESTGetter.HttpsSubmitTask t = new RESTGetter.HttpsSubmitTask("https://team3313.com/scouting/pit/frc3313", "{\n" +
+                "  \"social\": [\n" +
+                "    {\n" +
+                "      \"site\": \"team3313.com\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"site\": \"Twitter\",\n" +
+                "      \"handle\": \"@team3313\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"awards\": {\n" +
+                "    \"chairmans\": true,\n" +
+                "    \"woodie\": false,\n" +
+                "    \"deans\": false\n" +
+                "  }\n" +
+                "}") {
+
             @Override
             protected void customEnd(String r) {
-                System.out.printf("Writing to log: ");
                 System.out.println(r);
+                Toast.makeText(MainActivity.instance, r, Toast.LENGTH_LONG).show();
             }
         };
-        t.execute();
+        t.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");
+        RESTGetter.HttpRequestTask r = new RESTGetter.HttpRequestTask("https://team3313.com/teams/frc3313") {
+            @Override
+            protected void customEnd(JSONObject r) {
+                System.out.printf("Writing to log");
+                System.out.println(r.toString());
+            }
+        };
+
+        r.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");
     }
 
 
