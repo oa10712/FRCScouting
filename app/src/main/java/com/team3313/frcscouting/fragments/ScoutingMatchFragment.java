@@ -2,12 +2,10 @@ package com.team3313.frcscouting.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -15,8 +13,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.team3313.frcscouting.MainActivity;
-import com.team3313.frcscouting.R;
 import com.team3313.frcscouting.components.NumberPicker;
+import com.team3313.frcscouting.components.MatchButtons;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,28 +24,23 @@ import org.json.JSONObject;
  * Use the {@link ScoutingMatchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScoutingMatchFragment extends Fragment {
+public class ScoutingMatchFragment extends ScoutingFragment {
 
     LinearLayout linearLayout;
     LinearLayout matchSep;
     TableLayout autoLayout;
     TableLayout teleLayout;
 
-    CheckBox autoSwitchBox;
-    CheckBox autoScaleBox;
-    CheckBox autoCrossBox;
+    public CheckBox autoSwitchBox;
+    public CheckBox autoScaleBox;
+    public CheckBox autoCrossBox;
 
-    NumberPicker scalePicker;
-    NumberPicker switchPicker;
-    NumberPicker exchangePicker;
-    CheckBox teleClimbBox;
+    public NumberPicker scalePicker;
+    public NumberPicker switchPicker;
+    public NumberPicker exchangePicker;
+    public CheckBox teleClimbBox;
     // TODO: Rename and change types of parameters
-    private JSONObject data;
 
-
-    public ScoutingMatchFragment() {
-        // Required empty public constructor
-    }
 
     /**
      * Use this factory method to create a new instance of
@@ -56,7 +49,7 @@ public class ScoutingMatchFragment extends Fragment {
      * @param start Parameter 1.
      * @return A new instance of fragment ScoutingMatchFragment.
      */
-    public static Fragment newInstance(JSONObject start) {
+    public static ScoutingMatchFragment newInstance(JSONObject start) {
         ScoutingMatchFragment fragment = new ScoutingMatchFragment();
         fragment.data = start;
         return fragment;
@@ -80,34 +73,7 @@ public class ScoutingMatchFragment extends Fragment {
         matchSep = new LinearLayout(getContext());
         matchSep.setOrientation(LinearLayout.HORIZONTAL);
 
-        LinearLayout buttonRow = new LinearLayout(getActivity());
-        buttonRow.setOrientation(LinearLayout.HORIZONTAL);
-        Button matchButton = new Button(getActivity());
-        matchButton.setText("Match");
-        matchButton.setEnabled(false);
-        buttonRow.addView(matchButton);
-        Button notesButton = new Button(getActivity());
-        notesButton.setText("Notes");
-        notesButton.setClickable(true);
-        notesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    data.getJSONObject("auto").put("switch", autoSwitchBox.isChecked());
-                    data.getJSONObject("auto").put("scale", autoScaleBox.isChecked());
-                    data.getJSONObject("auto").put("passedLine", autoCrossBox.isChecked());
-
-                    data.getJSONObject("tele").put("scale", scalePicker.getValue());
-                    data.getJSONObject("tele").put("switch", switchPicker.getValue());
-                    data.getJSONObject("tele").put("exchange", exchangePicker.getValue());
-                    data.getJSONObject("tele").put("climb", teleClimbBox.isChecked());
-                } catch (JSONException e) {
-                }
-                FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, ScoutingNotesFragment.newInstance(data)).commit();
-            }
-        });
-        buttonRow.addView(notesButton);
+        LinearLayout buttonRow = new MatchButtons(getContext(), this);
         linearLayout.addView(buttonRow);
 
         autoLayout = new TableLayout(getContext());

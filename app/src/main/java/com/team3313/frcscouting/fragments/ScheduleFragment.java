@@ -4,9 +4,11 @@ package com.team3313.frcscouting.fragments;
  * Created by oa10712 on 3/7/2018.
  */
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,33 +57,40 @@ public class ScheduleFragment extends Fragment {
             if (DataStore.matchData.length() != 0) {
                 tableLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
                 TableRow header = new TableRow(getActivity());
-
+                header.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 TextView matchNameHead = new TextView(getActivity());
                 matchNameHead.setText("Match ID");
+                matchNameHead.setTextColor(Color.WHITE);
                 header.addView(matchNameHead);
 
                 TextView red1head = new TextView(getActivity());
                 red1head.setText("Red 1");
+                red1head.setTextColor(Color.WHITE);
                 header.addView(red1head);
 
                 TextView red2head = new TextView(getActivity());
                 red2head.setText("Red 2");
+                red2head.setTextColor(Color.WHITE);
                 header.addView(red2head);
 
                 TextView red3head = new TextView(getActivity());
                 red3head.setText("Red 3");
+                red3head.setTextColor(Color.WHITE);
                 header.addView(red3head);
 
                 TextView blue1head = new TextView(getActivity());
                 blue1head.setText("Blue 1");
+                blue1head.setTextColor(Color.WHITE);
                 header.addView(blue1head);
 
                 TextView blue2head = new TextView(getActivity());
                 blue2head.setText("Blue 2");
+                blue2head.setTextColor(Color.WHITE);
                 header.addView(blue2head);
 
                 TextView blue3head = new TextView(getActivity());
                 blue3head.setText("Blue 3");
+                blue3head.setTextColor(Color.WHITE);
                 header.addView(blue3head);
 
                 tableLayout.addView(header);
@@ -92,7 +101,12 @@ public class ScheduleFragment extends Fragment {
                     JSONArray blue = match.getJSONObject("alliances").getJSONObject("blue").getJSONArray("team_keys");
 
                     TableRow matchRow = new TableRow(getActivity());
+                    if (i % 2 == 0) {
+                        matchRow.setBackgroundColor(getResources().getColor(R.color.colorAltRow));
+                    }
                     matchRow.setClickable(true);
+                    matchRow.setMinimumHeight(75);
+                    matchRow.setGravity(Gravity.CENTER_VERTICAL);
                     matchRow.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -112,7 +126,6 @@ public class ScheduleFragment extends Fragment {
                             fragmentManager.beginTransaction().replace(R.id.content_frame, ScoutingMatchFragment.newInstance(start)).commit();
                         }
                     });
-                    matchRow.setMinimumHeight(75);
 
                     TextView matchName = new TextView(getActivity());
                     matchName.setText(match.getString("key"));

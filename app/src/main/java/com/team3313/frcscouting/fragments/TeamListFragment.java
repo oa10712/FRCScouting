@@ -59,7 +59,7 @@ public class TeamListFragment extends Fragment {
                     view.setMinHeight(50);
                     view.setOnClickListener(teamClick);
                     row.addView(view);
-                } catch (JSONException e) {
+                } catch (Exception e) {
                 }
             }
             tableLayout.addView(row);

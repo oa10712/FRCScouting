@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 
 import com.team3313.frcscouting.MainActivity;
 import com.team3313.frcscouting.R;
+import com.team3313.frcscouting.components.MatchButtons;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,15 +22,11 @@ import org.json.JSONObject;
  * Use the {@link ScoutingNotesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScoutingNotesFragment extends Fragment {
-    JSONObject data;
+public class ScoutingNotesFragment extends ScoutingFragment {
 
     LinearLayout linearLayout;
-    EditText editText;
+    public EditText editText;
 
-
-    public ScoutingNotesFragment() {
-    }
 
     /**
      * Use this factory method to create a new instance of
@@ -51,26 +48,7 @@ public class ScoutingNotesFragment extends Fragment {
         linearLayout = new LinearLayout(getActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-        LinearLayout buttonRow = new LinearLayout(getActivity());
-        buttonRow.setOrientation(LinearLayout.HORIZONTAL);
-        Button matchButton = new Button(getActivity());
-        matchButton.setText("Match");
-        matchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    data.put("notes", editText.getText());
-                } catch (JSONException e) {
-                }
-                FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, ScoutingMatchFragment.newInstance(data)).commit();
-            }
-        });
-        buttonRow.addView(matchButton);
-        Button notesButton = new Button(getActivity());
-        notesButton.setText("Notes");
-        notesButton.setEnabled(false);
-        buttonRow.addView(notesButton);
+        LinearLayout buttonRow = new MatchButtons(getContext(), this);
         linearLayout.addView(buttonRow);
 
         editText = new EditText(getContext());
