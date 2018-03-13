@@ -13,6 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -50,6 +54,12 @@ public class DataStore {
                 @Override
                 protected void customEnd(JSONArray r) {
                     matchData = r;
+
+                    try {
+                        matchData = sortJsonArray(matchData, "predicted_time");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     writeToFile(matchData.toString(), "regional-matches.json");
                 }
             };
@@ -116,6 +126,12 @@ public class DataStore {
             @Override
             protected void customEnd(JSONArray r) {
                 matchData = r;
+
+                try {
+                    matchData = sortJsonArray(matchData, "predicted_time");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 writeToFile(matchData.toString(), "regional-matches.json");
             }
         };
@@ -123,31 +139,32 @@ public class DataStore {
 
         task = new RESTGetter.HttpsRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/teams") {
             @Override
-            protected void customEnd(final JSONArray r) {
-                System.out.println("Teams.json was empty");
-                for (int i = 0; i < r.length(); i++) {
-
-
-                    RESTGetter.HttpsRequestTask team = null;
-                    try {
-                        final int finalI = i;
-                        team = new RESTGetter.HttpsRequestTask("https://team3313.com/teams/" + r.getString(finalI)) {
+            protected void customEnd(JSONArray r) {
+                try {
+                    System.out.println("Teams.json was empty");
+                    final List<String> sort = new ArrayList<>();
+                    for (int i = 0; i < r.length(); i++) {
+                        sort.add(r.getString(i));
+                    }
+                    Collections.sort(sort);
+                    for (final String s : sort) {
+                        RESTGetter.HttpsRequestTask team = null;
+                        team = new RESTGetter.HttpsRequestTask("https://team3313.com/teams/" + s) {
                             @Override
                             protected void customEnd(JSONObject ret) {
                                 try {
-                                    teamData.put(r.getString(finalI), ret);
+                                    teamData.put(s, ret);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
                         };
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        team.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");
                     }
-
-                    team.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");
+                    System.out.println(teamData.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                System.out.println(teamData.toString());
             }
         };
         task.execute("X-TBA-Auth-Key:IdxoRao9PllsmPXPcOq9lcNU3o3zQAN6Tg3gflC9VCw1Wvj4pfqzV1Gmfiks0T9o");
@@ -205,5 +222,32 @@ public class DataStore {
             e.printStackTrace();
         }
         return "N/A";
+    }
+
+    public static JSONArray sortJsonArray(JSONArray array, final String field) throws JSONException {
+        List<JSONObject> jsons = new ArrayList<JSONObject>();
+        for (int i = 0; i < array.length(); i++) {
+            jsons.add(array.getJSONObject(i));
+        }
+        Collections.sort(jsons, new Comparator<JSONObject>() {
+            @Override
+            public int compare(JSONObject lhs, JSONObject rhs) {
+                String lid = null;
+                try {
+                    lid = lhs.getString(field);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String rid = null;
+                try {
+                    rid = rhs.getString(field);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                // Here you could parse string id to integer and then compare.
+                return lid.compareTo(rid);
+            }
+        });
+        return new JSONArray(jsons);
     }
 }

@@ -6,6 +6,7 @@ package com.team3313.frcscouting.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.team3313.frcscouting.DataStore;
 import com.team3313.frcscouting.MainActivity;
+import com.team3313.frcscouting.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,6 +92,27 @@ public class ScheduleFragment extends Fragment {
                     JSONArray blue = match.getJSONObject("alliances").getJSONObject("blue").getJSONArray("team_keys");
 
                     TableRow matchRow = new TableRow(getActivity());
+                    matchRow.setClickable(true);
+                    matchRow.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            TableRow row = (TableRow) v;
+                            TextView match = (TextView) row.getChildAt(0);
+                            TextView team = null;
+                            try {
+                                team = (TextView) row.getChildAt(DataStore.config.getInt("station") + 1);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            JSONObject start = null;
+                            try {
+                                start = new JSONObject("{\"match_key\":\"" + match.getText() + "\",\"team_key\":\"" + team.getText() + "\",\"auto\":{\"passedLine\":false,\"switch\":false,\"scale\":false},\"tele\":{\"switch\":0,\"scale\":0,\"exchange\":0,\"climb\":false},\"notes\":\"\"}");
+                            } catch (JSONException e) {
+                            }
+                            FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, ScoutingMatchFragment.newInstance(start)).commit();
+                        }
+                    });
                     matchRow.setMinimumHeight(75);
 
                     TextView matchName = new TextView(getActivity());
