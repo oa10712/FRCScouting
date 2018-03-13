@@ -102,7 +102,6 @@ public class ScheduleFragment extends Fragment {
                             try {
                                 team = (TextView) row.getChildAt(DataStore.config.getInt("station") + 1);
                             } catch (JSONException e) {
-                                e.printStackTrace();
                             }
                             JSONObject start = null;
                             try {

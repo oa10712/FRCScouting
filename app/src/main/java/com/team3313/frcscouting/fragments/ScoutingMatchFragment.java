@@ -84,7 +84,7 @@ public class ScoutingMatchFragment extends Fragment {
         buttonRow.setOrientation(LinearLayout.HORIZONTAL);
         Button matchButton = new Button(getActivity());
         matchButton.setText("Match");
-        matchButton.setClickable(false);
+        matchButton.setEnabled(false);
         buttonRow.addView(matchButton);
         Button notesButton = new Button(getActivity());
         notesButton.setText("Notes");

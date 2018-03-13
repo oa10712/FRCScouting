@@ -69,7 +69,7 @@ public class ScoutingNotesFragment extends Fragment {
         buttonRow.addView(matchButton);
         Button notesButton = new Button(getActivity());
         notesButton.setText("Notes");
-        notesButton.setClickable(false);
+        notesButton.setEnabled(false);
         buttonRow.addView(notesButton);
         linearLayout.addView(buttonRow);
 
