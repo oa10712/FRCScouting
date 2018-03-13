@@ -1,6 +1,7 @@
 package com.team3313.frcscouting;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -27,6 +28,51 @@ public class DataStore {
     public static JSONArray matchData;
     public static JSONObject config;
     public static JSONObject teamData = new JSONObject();
+    private static RESTGetter.HttpsRequestTaskArray scheduleGetter =
+            new RESTGetter.HttpsRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/schedule") {
+                @Override
+                protected void customEnd(JSONArray r) {
+                    matchData = r;
+
+                    try {
+                        matchData = sortJsonArray(matchData, "predicted_time");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    writeToFile(matchData.toString(), "regional-matches.json");
+                }
+            };
+    private static RESTGetter.HttpsRequestTaskArray teamGetter =
+            new RESTGetter.HttpsRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/teams") {
+                @Override
+                protected void customEnd(JSONArray r) {
+                    try {
+                        System.out.println("Teams.json was empty");
+                        final List<String> sort = new ArrayList<>();
+                        for (int i = 0; i < r.length(); i++) {
+                            sort.add(r.getString(i));
+                        }
+                        Collections.sort(sort);
+                        for (final String s : sort) {
+                            RESTGetter.HttpsRequestTask team = null;
+                            team = new RESTGetter.HttpsRequestTask("https://team3313.com/teams/" + s) {
+                                @Override
+                                protected void customEnd(JSONObject ret) {
+                                    try {
+                                        teamData.put(s, ret);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+                            team.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");
+                        }
+                        writeToFile(teamData.toString(), "teams.json");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
 
     static void initLoad() {
         String configString = readFromFile("config.json");
@@ -41,7 +87,7 @@ public class DataStore {
             config = new JSONObject();
         }
         String matches = readFromFile("regional-matches.json");
-        if (matches != "") {
+        if (!Objects.equals(matches, "")) {
             try {
                 matchData = new JSONArray(matches);
             } catch (JSONException e) {
@@ -49,21 +95,7 @@ public class DataStore {
                 matchData = new JSONArray();
             }
         } else {
-            //this one reads matches from the ndgf regional
-            RESTGetter.HttpsRequestTaskArray task = new RESTGetter.HttpsRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/schedule") {
-                @Override
-                protected void customEnd(JSONArray r) {
-                    matchData = r;
-
-                    try {
-                        matchData = sortJsonArray(matchData, "predicted_time");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    writeToFile(matchData.toString(), "regional-matches.json");
-                }
-            };
-            task.execute();
+            scheduleGetter.execute();
         }
         String teamString = readFromFile("teams.json");
         if (!Objects.equals(teamString, "")) {
@@ -74,14 +106,7 @@ public class DataStore {
                 e.printStackTrace();
             }
         } else {
-            RESTGetter.HttpRequestTaskArray task = new RESTGetter.HttpRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/teams") {
-                @Override
-                protected void customEnd(JSONArray r) {
-                    System.out.println("Teams.json was empty");
-                    System.out.println(r.toString());
-                }
-            };
-            task.execute("X-TBA-Auth-Key:IdxoRao9PllsmPXPcOq9lcNU3o3zQAN6Tg3gflC9VCw1Wvj4pfqzV1Gmfiks0T9o");
+            teamGetter.execute("X-TBA-Auth-Key:IdxoRao9PllsmPXPcOq9lcNU3o3zQAN6Tg3gflC9VCw1Wvj4pfqzV1Gmfiks0T9o");
         }
 
 /*        RESTGetter.HttpsSubmitTask t = new RESTGetter.HttpsSubmitTask("https://team3313.com/scouting/pit/frc3313", "{\n" +
@@ -137,37 +162,7 @@ public class DataStore {
         };
         task.execute();
 
-        task = new RESTGetter.HttpsRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/teams") {
-            @Override
-            protected void customEnd(JSONArray r) {
-                try {
-                    System.out.println("Teams.json was empty");
-                    final List<String> sort = new ArrayList<>();
-                    for (int i = 0; i < r.length(); i++) {
-                        sort.add(r.getString(i));
-                    }
-                    Collections.sort(sort);
-                    for (final String s : sort) {
-                        RESTGetter.HttpsRequestTask team = null;
-                        team = new RESTGetter.HttpsRequestTask("https://team3313.com/teams/" + s) {
-                            @Override
-                            protected void customEnd(JSONObject ret) {
-                                try {
-                                    teamData.put(s, ret);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        };
-                        team.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");
-                    }
-                    System.out.println(teamData.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        task.execute("X-TBA-Auth-Key:IdxoRao9PllsmPXPcOq9lcNU3o3zQAN6Tg3gflC9VCw1Wvj4pfqzV1Gmfiks0T9o");
+        teamGetter.execute("X-TBA-Auth-Key:IdxoRao9PllsmPXPcOq9lcNU3o3zQAN6Tg3gflC9VCw1Wvj4pfqzV1Gmfiks0T9o");
     }
 
     private static void writeToFile(String data, String filename) {
@@ -190,7 +185,7 @@ public class DataStore {
             if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
+                String receiveString;
                 StringBuilder stringBuilder = new StringBuilder();
 
                 while ((receiveString = bufferedReader.readLine()) != null) {
@@ -224,7 +219,8 @@ public class DataStore {
         return "N/A";
     }
 
-    public static JSONArray sortJsonArray(JSONArray array, final String field) throws JSONException {
+    @NonNull
+    private static JSONArray sortJsonArray(JSONArray array, final String field) throws JSONException {
         List<JSONObject> jsons = new ArrayList<JSONObject>();
         for (int i = 0; i < array.length(); i++) {
             jsons.add(array.getJSONObject(i));
@@ -250,4 +246,6 @@ public class DataStore {
         });
         return new JSONArray(jsons);
     }
+
+
 }

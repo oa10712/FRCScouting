@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.team3313.frcscouting.MainActivity;
@@ -24,10 +25,10 @@ public class ScoutingNotesFragment extends Fragment {
     JSONObject data;
 
     LinearLayout linearLayout;
+    EditText editText;
 
 
     public ScoutingNotesFragment() {
-        // Required empty public constructor
     }
 
     /**
@@ -57,6 +58,10 @@ public class ScoutingNotesFragment extends Fragment {
         matchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    data.put("notes", editText.getText());
+                } catch (JSONException e) {
+                }
                 FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, ScoutingMatchFragment.newInstance(data)).commit();
             }
@@ -67,6 +72,15 @@ public class ScoutingNotesFragment extends Fragment {
         notesButton.setClickable(false);
         buttonRow.addView(notesButton);
         linearLayout.addView(buttonRow);
+
+        editText = new EditText(getContext());
+
+        try {
+            editText.setText(data.getString("notes"));
+        } catch (JSONException e) {
+        }
+
+        linearLayout.addView(editText);
         return linearLayout;
     }
 
