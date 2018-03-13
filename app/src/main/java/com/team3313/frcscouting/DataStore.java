@@ -2,7 +2,6 @@ package com.team3313.frcscouting;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +22,7 @@ import java.util.Objects;
 public class DataStore {
     public static JSONArray matchData;
     public static JSONObject config;
-    public static JSONObject teamData;
+    public static JSONObject teamData = new JSONObject();
 
     static void initLoad() {
         String configString = readFromFile("config.json");
@@ -38,7 +37,7 @@ public class DataStore {
             config = new JSONObject();
         }
         String matches = readFromFile("regional-matches.json");
-        if (!Objects.equals(matches, "")) {
+        if (matches != "") {
             try {
                 matchData = new JSONArray(matches);
             } catch (JSONException e) {
@@ -47,16 +46,11 @@ public class DataStore {
             }
         } else {
             //this one reads matches from the ndgf regional
-            RESTGetter.HttpsRequestTask task = new RESTGetter.HttpsRequestTask("https://www.team3313.com/api/schedule/read_regional.php?regional=" + MainActivity.instance.getActiveRegional()) {
+            RESTGetter.HttpsRequestTaskArray task = new RESTGetter.HttpsRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/schedule") {
                 @Override
-                protected void customEnd(JSONObject r) {
-                    try {
-                        matchData = r.getJSONArray("records");
-                        writeToFile(matchData.toString(), "regional-matches.json");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        matchData = new JSONArray();
-                    }
+                protected void customEnd(JSONArray r) {
+                    matchData = r;
+                    writeToFile(matchData.toString(), "regional-matches.json");
                 }
             };
             task.execute();
@@ -70,7 +64,7 @@ public class DataStore {
                 e.printStackTrace();
             }
         } else {
-            RESTGetter.HttpRequestTaskArray task = new RESTGetter.HttpRequestTaskArray("http://thebluealliance.com/api/v3/event/" + MainActivity.instance.getActiveRegional() + "/teams/keys") {
+            RESTGetter.HttpRequestTaskArray task = new RESTGetter.HttpRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/teams") {
                 @Override
                 protected void customEnd(JSONArray r) {
                     System.out.println("Teams.json was empty");
@@ -80,7 +74,7 @@ public class DataStore {
             task.execute("X-TBA-Auth-Key:IdxoRao9PllsmPXPcOq9lcNU3o3zQAN6Tg3gflC9VCw1Wvj4pfqzV1Gmfiks0T9o");
         }
 
-        RESTGetter.HttpsSubmitTask t = new RESTGetter.HttpsSubmitTask("https://team3313.com/scouting/pit/frc3313", "{\n" +
+/*        RESTGetter.HttpsSubmitTask t = new RESTGetter.HttpsSubmitTask("https://team3313.com/scouting/pit/frc3313", "{\n" +
                 "  \"social\": [\n" +
                 "    {\n" +
                 "      \"site\": \"team3313.com\"\n" +
@@ -103,8 +97,8 @@ public class DataStore {
                 Toast.makeText(MainActivity.instance, r, Toast.LENGTH_LONG).show();
             }
         };
-        t.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");
-        RESTGetter.HttpRequestTask r = new RESTGetter.HttpRequestTask("https://team3313.com/teams/frc3313") {
+        t.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");*/
+        RESTGetter.HttpRequestTask r = new RESTGetter.HttpRequestTask("https://team3313.com/teams/frc33313") {
             @Override
             protected void customEnd(JSONObject r) {
                 System.out.printf("Writing to log");
@@ -115,6 +109,49 @@ public class DataStore {
         r.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");
     }
 
+
+    public static void manualRefresh() {
+        //this one reads matches from the ndgf regional
+        RESTGetter.HttpsRequestTaskArray task = new RESTGetter.HttpsRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/schedule") {
+            @Override
+            protected void customEnd(JSONArray r) {
+                matchData = r;
+                writeToFile(matchData.toString(), "regional-matches.json");
+            }
+        };
+        task.execute();
+
+        task = new RESTGetter.HttpsRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/teams") {
+            @Override
+            protected void customEnd(final JSONArray r) {
+                System.out.println("Teams.json was empty");
+                for (int i = 0; i < r.length(); i++) {
+
+
+                    RESTGetter.HttpsRequestTask team = null;
+                    try {
+                        final int finalI = i;
+                        team = new RESTGetter.HttpsRequestTask("https://team3313.com/teams/" + r.getString(finalI)) {
+                            @Override
+                            protected void customEnd(JSONObject ret) {
+                                try {
+                                    teamData.put(r.getString(finalI), ret);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    team.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");
+                }
+                System.out.println(teamData.toString());
+            }
+        };
+        task.execute("X-TBA-Auth-Key:IdxoRao9PllsmPXPcOq9lcNU3o3zQAN6Tg3gflC9VCw1Wvj4pfqzV1Gmfiks0T9o");
+    }
 
     private static void writeToFile(String data, String filename) {
         try {
@@ -159,4 +196,14 @@ public class DataStore {
         writeToFile(config.toString(), "config.json");
     }
 
+    public static String getTeamField(String teamKey, String key, Class clazz) {
+        try {
+            if (clazz == String.class) {
+                return teamData.getJSONObject(teamKey).getString(key);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "N/A";
+    }
 }

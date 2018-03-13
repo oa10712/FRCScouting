@@ -4,17 +4,13 @@ package com.team3313.frcscouting.fragments;
  * Created by oa10712 on 3/7/2018.
  */
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -22,28 +18,18 @@ import android.widget.TextView;
 
 import com.team3313.frcscouting.DataStore;
 import com.team3313.frcscouting.MainActivity;
-import com.team3313.frcscouting.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ScheduleFragment extends Fragment {
     LinearLayout linearLayout;
-    RelativeLayout relativeLayout;
     ScrollView scrollView;
     TableLayout tableLayout;
     TextView textView;
-    Button button;
-    View.OnClickListener teamClick;
 
     public ScheduleFragment() {
-        teamClick = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, TeamDataFragment.newInstance((String) ((TextView) v).getText())).commit();
-            }
-        };
     }
 
     @Override
@@ -52,9 +38,14 @@ public class ScheduleFragment extends Fragment {
         scrollView = new ScrollView(getActivity());
         linearLayout = this.linearLayout();
         tableLayout = new TableLayout(getActivity());
-        relativeLayout = this.relativeLayout();
+        tableLayout.setColumnStretchable(0, true);
+        tableLayout.setColumnStretchable(1, true);
+        tableLayout.setColumnStretchable(2, true);
+        tableLayout.setColumnStretchable(3, true);
+        tableLayout.setColumnStretchable(4, true);
+        tableLayout.setColumnStretchable(5, true);
+        tableLayout.setColumnStretchable(6, true);
         textView = this.textView();
-        button = this.button();
 
         // ADD VIEWs TO topLayout
 
@@ -95,49 +86,39 @@ public class ScheduleFragment extends Fragment {
 
                 for (int i = 0; i < DataStore.matchData.length(); i++) {
                     JSONObject match = DataStore.matchData.getJSONObject(i);
+                    JSONArray red = match.getJSONObject("alliances").getJSONObject("red").getJSONArray("team_keys");
+                    JSONArray blue = match.getJSONObject("alliances").getJSONObject("blue").getJSONArray("team_keys");
 
                     TableRow matchRow = new TableRow(getActivity());
                     matchRow.setMinimumHeight(75);
 
                     TextView matchName = new TextView(getActivity());
-                    matchName.setText(match.getString("match_id"));
+                    matchName.setText(match.getString("key"));
                     matchRow.addView(matchName);
 
                     TextView red1 = new TextView(getActivity());
-                    red1.setText(match.getString("red1"));
-                    red1.setMinWidth(150);
+                    red1.setText(red.getString(0));
                     matchRow.addView(red1);
-                    red1.setOnClickListener(teamClick);
 
                     TextView red2 = new TextView(getActivity());
-                    red2.setText(match.getString("red2"));
-                    red2.setMinWidth(150);
+                    red2.setText(red.getString(1));
                     matchRow.addView(red2);
-                    red2.setOnClickListener(teamClick);
 
                     TextView red3 = new TextView(getActivity());
-                    red3.setText(match.getString("red3"));
-                    red3.setMinWidth(150);
+                    red3.setText(red.getString(2));
                     matchRow.addView(red3);
-                    red3.setOnClickListener(teamClick);
 
                     TextView blue1 = new TextView(getActivity());
-                    blue1.setText(match.getString("blue1"));
-                    blue1.setMinWidth(150);
+                    blue1.setText(blue.getString(0));
                     matchRow.addView(blue1);
-                    blue1.setOnClickListener(teamClick);
 
                     TextView blue2 = new TextView(getActivity());
-                    blue2.setText(match.getString("blue2"));
-                    blue2.setMinWidth(150);
+                    blue2.setText(blue.getString(1));
                     matchRow.addView(blue2);
-                    blue2.setOnClickListener(teamClick);
 
                     TextView blue3 = new TextView(getActivity());
-                    blue3.setText(match.getString("blue3"));
-                    blue3.setMinWidth(150);
+                    blue3.setText(blue.getString(2));
                     matchRow.addView(blue3);
-                    blue3.setOnClickListener(teamClick);
 
                     tableLayout.addView(matchRow);
                 }
@@ -149,8 +130,6 @@ public class ScheduleFragment extends Fragment {
             e.printStackTrace();
             linearLayout.addView(textView);
         }
-        linearLayout.addView(button);
-        linearLayout.addView(relativeLayout);
 
         scrollView.addView(linearLayout);
         // SET topLayout AS CONTENT VIEW
@@ -165,33 +144,6 @@ public class ScheduleFragment extends Fragment {
         TextView textView = new TextView(getActivity());
         textView.setText("Match data did not load");
         return textView;
-    }
-
-    /**
-     * Create button
-     *
-     * @return
-     */
-    Button button() {
-        Button button = new Button(getActivity());
-        button.setText("Button");
-        return button;
-    }
-
-    /**
-     * Create relative layout
-     *
-     * @return
-     */
-    RelativeLayout relativeLayout() {
-        RelativeLayout relativeLayout = new RelativeLayout(getActivity());
-
-        // SET THE SIZE
-        relativeLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 100));
-
-        // SET BACKGROUND COLOR JUST TO MAKE LAYOUT VISIBLE
-        relativeLayout.setBackgroundColor(Color.GREEN);
-        return relativeLayout;
     }
 
     /**

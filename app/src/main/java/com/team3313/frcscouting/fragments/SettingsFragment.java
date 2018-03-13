@@ -90,9 +90,22 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
         });
         saveRow.addView(saveButton);
 
+        TableRow refreshRow = new TableRow(getContext());
+
+        Button refreshButton = new Button(getActivity());
+        refreshButton.setText("Refresh data");
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataStore.manualRefresh();
+            }
+        });
+        refreshRow.addView(refreshButton);
+
         tableLayout.addView(stationRow);
         tableLayout.addView(apiRow);
         tableLayout.addView(saveRow);
+        tableLayout.addView(refreshRow);
         scrollView.addView(tableLayout);
         return scrollView;
     }

@@ -6,9 +6,10 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="button_name">a</string>
     <string-array name="navigation_drawer_items_array">
         <item>Schedule</item>
-        <item>Pit Scouting</item>
+        <item>Team List</item>
         <item>Rankings</item>
         <item>Settings</item>
     </string-array>
@@ -20,5 +21,8 @@
         <item>Blue 2</item>
         <item>Blue 3</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

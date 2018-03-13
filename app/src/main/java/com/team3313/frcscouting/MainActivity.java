@@ -14,10 +14,10 @@ import android.widget.ListView;
 
 import com.team3313.frcscouting.drawer.DataModel;
 import com.team3313.frcscouting.drawer.DrawerItemCustomAdapter;
-import com.team3313.frcscouting.fragments.PitScoutingFragment;
 import com.team3313.frcscouting.fragments.RankingFragment;
 import com.team3313.frcscouting.fragments.ScheduleFragment;
 import com.team3313.frcscouting.fragments.SettingsFragment;
+import com.team3313.frcscouting.fragments.TeamListFragment;
 
 public class MainActivity extends AppCompatActivity {
     public static String regional;
@@ -43,10 +43,10 @@ public class MainActivity extends AppCompatActivity {
 
         setupToolbar();
 
-        DataModel[] drawerItem = new DataModel[5];
+        DataModel[] drawerItem = new DataModel[4];
 
         drawerItem[0] = new DataModel(R.drawable.ic_schedule, "Schedule");
-        drawerItem[1] = new DataModel(R.drawable.ic_scouting, "Pit Scouting");
+        drawerItem[1] = new DataModel(R.drawable.ic_scouting, "Team List");
         drawerItem[2] = new DataModel(R.drawable.ic_rankings, "Rankings");
         drawerItem[3] = new DataModel(R.drawable.ic_menu_manage, "Settings");
 
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new ScheduleFragment();
                 break;
             case 1:
-                fragment = new PitScoutingFragment();
+                fragment = new TeamListFragment();
                 break;
             case 2:
                 fragment = new RankingFragment();
