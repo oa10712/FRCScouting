@@ -247,5 +247,34 @@ public class DataStore {
         return new JSONArray(jsons);
     }
 
+    public static JSONArray searchTeamMatches(String team, String regional) {
+        JSONArray results = new JSONArray();
+        System.out.println("Searching " + regional + " for " + team);
+        for (int i = 0; i < matchData.length(); i++) {
+            try {
+                JSONObject item = matchData.getJSONObject(i);
+                if (item.getString("event_key").equalsIgnoreCase(regional)) {
+                    boolean present = false;
+                    JSONArray red = item.getJSONObject("alliances").getJSONObject("red").getJSONArray("team_keys");
+                    for (int j = 0; j < 3; j++) {
+                        if (red.getString(j).equalsIgnoreCase(team)) {
+                            present = true;
+                        }
+                    }
+                    JSONArray blue = item.getJSONObject("alliances").getJSONObject("blue").getJSONArray("team_keys");
+                    for (int j = 0; j < 3; j++) {
+                        if (blue.getString(j).equalsIgnoreCase(team)) {
+                            present = true;
+                        }
+                    }
+                    if (present) {
+                        results.put(item);
+                    }
+                }
+            } catch (JSONException e) {
+            }
+        }
 
+        return results;
+    }
 }

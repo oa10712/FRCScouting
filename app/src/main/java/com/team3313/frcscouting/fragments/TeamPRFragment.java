@@ -14,11 +14,11 @@ import com.team3313.frcscouting.components.TeamButtons;
  * Created by oa10712 on 3/12/2018.
  */
 
-public class TeamNotesFragment extends TeamFragment {
+public class TeamPRFragment extends TeamFragment {
     private static final String ARG_TEAM_KEY = "frc3313";
     LinearLayout linearLayout;
 
-    public TeamNotesFragment() {
+    public TeamPRFragment() {
         // Required empty public constructor
     }
 
@@ -29,8 +29,8 @@ public class TeamNotesFragment extends TeamFragment {
      * @param param1 Parameter 1.
      * @return A new instance of fragment TeamPRFragment.
      */
-    public static TeamNotesFragment newInstance(String param1) {
-        TeamNotesFragment fragment = new TeamNotesFragment();
+    public static TeamPRFragment newInstance(String param1) {
+        TeamPRFragment fragment = new TeamPRFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TEAM_KEY, param1);
         fragment.setArguments(args);
@@ -43,7 +43,7 @@ public class TeamNotesFragment extends TeamFragment {
         if (getArguments() != null) {
             teamKey = getArguments().getString(ARG_TEAM_KEY);
         }
-        MainActivity.instance.setTitle("Team " + teamKey + ", " + DataStore.getTeamField(teamKey, "name", String.class) + " - Notes");
+        MainActivity.instance.setTitle("Team " + teamKey + ", " + DataStore.getTeamField(teamKey, "name", String.class) + " - PR");
     }
 
     @Override
@@ -53,6 +53,7 @@ public class TeamNotesFragment extends TeamFragment {
 
         LinearLayout buttonRow = new TeamButtons(getContext(), this);
         linearLayout.addView(buttonRow);
+
         return linearLayout;
     }
 

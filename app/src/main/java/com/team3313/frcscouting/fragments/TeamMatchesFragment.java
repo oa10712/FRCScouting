@@ -1,27 +1,23 @@
 package com.team3313.frcscouting.fragments;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.team3313.frcscouting.DataStore;
 import com.team3313.frcscouting.MainActivity;
-import com.team3313.frcscouting.R;
+import com.team3313.frcscouting.components.MatchList;
+import com.team3313.frcscouting.components.TeamButtons;
 
 /**
  * Created by oa10712 on 3/12/2018.
  */
 
-public class TeamMatchesFragment extends Fragment {
+public class TeamMatchesFragment extends TeamFragment {
     private static final String ARG_TEAM_KEY = "frc3313";
     LinearLayout linearLayout;
-    private String teamKey;
 
     public TeamMatchesFragment() {
         // Required empty public constructor
@@ -56,43 +52,11 @@ public class TeamMatchesFragment extends Fragment {
         linearLayout = new LinearLayout(getActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-        LinearLayout buttonRow = new LinearLayout(getActivity());
-        buttonRow.setOrientation(LinearLayout.HORIZONTAL);
-        Button dataButton = new Button(getActivity());
-        dataButton.setText("Data");
-        dataButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, TeamDataFragment.newInstance(teamKey)).commit();
-            }
-        });
-        buttonRow.addView(dataButton);
-        Button matchesButton = new Button(getActivity());
-        matchesButton.setText("Matches");
-        matchesButton.setClickable(false);
-        buttonRow.addView(matchesButton);
-        Button notesButton = new Button(getActivity());
-        notesButton.setText("Notes");
-        notesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, TeamNotesFragment.newInstance(teamKey)).commit();
-            }
-        });
-        buttonRow.addView(notesButton);
-        Button prButton = new Button(getActivity());
-        prButton.setText("PR");
-        prButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, PRFragment.newInstance(teamKey)).commit();
-            }
-        });
-        buttonRow.addView(prButton);
+        LinearLayout buttonRow = new TeamButtons(getContext(), this);
         linearLayout.addView(buttonRow);
+
+
+        linearLayout.addView(new MatchList(getContext(), DataStore.searchTeamMatches(teamKey, MainActivity.instance.getActiveRegional())));
         return linearLayout;
     }
 
