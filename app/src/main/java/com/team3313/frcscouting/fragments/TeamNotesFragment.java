@@ -1,14 +1,19 @@
 package com.team3313.frcscouting.fragments;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.team3313.frcscouting.DataStore;
 import com.team3313.frcscouting.MainActivity;
 import com.team3313.frcscouting.components.TeamButtons;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by oa10712 on 3/12/2018.
@@ -53,6 +58,26 @@ public class TeamNotesFragment extends TeamFragment {
 
         LinearLayout buttonRow = new TeamButtons(getContext(), this);
         linearLayout.addView(buttonRow);
+
+
+        for (JSONObject item : DataStore.matchData.values()) {
+            try {
+                if (item.getString("team_key").equalsIgnoreCase(teamKey)) {
+                    TextView label = new TextView(getContext());
+                    label.setText(item.getString("match_key").split("_")[1]);
+                    label.setTypeface(null, Typeface.BOLD);
+                    label.setTextSize(20);
+                    linearLayout.addView(label);
+
+                    TextView notes = new TextView(getContext());
+                    notes.setText(item.getString("notes"));
+                    linearLayout.addView(notes);
+                }
+            } catch (JSONException e) {
+            }
+        }
+
+
         return linearLayout;
     }
 
