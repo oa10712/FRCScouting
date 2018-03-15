@@ -17,6 +17,9 @@ import com.team3313.frcscouting.MainActivity;
 import com.team3313.frcscouting.R;
 import com.team3313.frcscouting.components.TeamButtons;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link TeamDataFragment#newInstance} factory method to
@@ -52,11 +55,12 @@ public class TeamDataFragment extends TeamFragment {
         if (getArguments() != null) {
             teamKey = getArguments().getString(ARG_TEAM_KEY);
         }
-        MainActivity.instance.setTitle("Team " + teamKey + ", " + DataStore.getTeamField(teamKey, "name", String.class) + " - Data");
+        MainActivity.instance.setTitle("Team " + teamKey + ", " + DataStore.getTeamField(teamKey, "name") + " - Data");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        DataStore.updateTeamStats(teamKey);
         linearLayout = new LinearLayout(getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
@@ -80,6 +84,13 @@ public class TeamDataFragment extends TeamFragment {
         botImage.setLayoutParams(params);
         gridLayout.addView(botImage);
 
+
+        JSONObject teamInfo = null;
+        try {
+            teamInfo = DataStore.teamData.getJSONObject(teamKey);
+        } catch (JSONException e) {
+        }
+
         TextView sclLb = new TextView(getContext());
         sclLb.setText("Scale/g");
         gridLayout.addView(sclLb);
@@ -97,19 +108,35 @@ public class TeamDataFragment extends TeamFragment {
         gridLayout.addView(climbLb);
 
         TextView scaleVal = new TextView(getContext());
-        scaleVal.setText("##.#");
+        try {
+            scaleVal.setText(teamInfo.getDouble("scale") + "");
+        } catch (JSONException e) {
+            scaleVal.setText("0");
+        }
         gridLayout.addView(scaleVal);
 
         TextView switchVal = new TextView(getContext());
-        switchVal.setText("##.#");
+        try {
+            switchVal.setText(teamInfo.getDouble("switch") + "");
+        } catch (JSONException e) {
+            switchVal.setText("0");
+        }
         gridLayout.addView(switchVal);
 
         TextView exchangeVal = new TextView(getContext());
-        exchangeVal.setText("##.#");
+        try {
+            exchangeVal.setText(teamInfo.getDouble("exchange") + "");
+        } catch (JSONException e) {
+            exchangeVal.setText("0");
+        }
         gridLayout.addView(exchangeVal);
 
         TextView climbVal = new TextView(getContext());
-        climbVal.setText("##%");
+        try {
+            climbVal.setText(teamInfo.getDouble("climb") + "%");
+        } catch (JSONException e) {
+            climbVal.setText("0%");
+        }
         gridLayout.addView(climbVal);
 
         TextView playLb = new TextView(getContext());
@@ -129,15 +156,27 @@ public class TeamDataFragment extends TeamFragment {
         gridLayout.addView(new Space(getContext()));
 
         TextView playVal = new TextView(getContext());
-        playVal.setText("##");
+        try {
+            playVal.setText(teamInfo.getInt("played") + "");
+        } catch (JSONException e) {
+            playVal.setText("0");
+        }
         gridLayout.addView(playVal);
 
         TextView crossVal = new TextView(getContext());
-        crossVal.setText("##%");
+        try {
+            crossVal.setText(teamInfo.getDouble("cross") + "%");
+        } catch (JSONException e) {
+            crossVal.setText("0%");
+        }
         gridLayout.addView(crossVal);
 
         TextView correctVal = new TextView(getContext());
-        correctVal.setText("##%");
+        try {
+            correctVal.setText(teamInfo.getDouble("correct") + "%");
+        } catch (JSONException e) {
+            correctVal.setText("0%");
+        }
         gridLayout.addView(correctVal);
 
         linearLayout.addView(gridLayout);

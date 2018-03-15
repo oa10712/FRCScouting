@@ -44,7 +44,7 @@ public class TeamMatchesFragment extends TeamFragment {
         if (getArguments() != null) {
             teamKey = getArguments().getString(ARG_TEAM_KEY);
         }
-        MainActivity.instance.setTitle("Team " + teamKey + ", " + DataStore.getTeamField(teamKey, "name", String.class) + " - Matches");
+        MainActivity.instance.setTitle("Team " + teamKey + ", " + DataStore.getTeamField(teamKey, "name") + " - Matches");
     }
 
     @Override

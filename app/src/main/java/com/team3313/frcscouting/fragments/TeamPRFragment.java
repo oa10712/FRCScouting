@@ -43,7 +43,7 @@ public class TeamPRFragment extends TeamFragment {
         if (getArguments() != null) {
             teamKey = getArguments().getString(ARG_TEAM_KEY);
         }
-        MainActivity.instance.setTitle("Team " + teamKey + ", " + DataStore.getTeamField(teamKey, "name", String.class) + " - PR");
+        MainActivity.instance.setTitle("Team " + teamKey + ", " + DataStore.getTeamField(teamKey, "name") + " - PR");
     }
 
     @Override

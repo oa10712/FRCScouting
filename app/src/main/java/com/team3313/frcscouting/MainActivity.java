@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.team3313.frcscouting.drawer.DataModel;
 import com.team3313.frcscouting.drawer.DrawerItemCustomAdapter;
@@ -107,6 +109,25 @@ public class MainActivity extends AppCompatActivity {
         mHandler = new Handler();
 
         startRepeatingTask();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
+            Fragment frag = null;
+            for (Fragment test : fragmentManager.getFragments()) {
+                if (test != null && test.isVisible()) {
+                    frag = test;
+                }
+            }
+            Toast.makeText(this, frag.toString(), Toast.LENGTH_LONG);
+            // do something on back.
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

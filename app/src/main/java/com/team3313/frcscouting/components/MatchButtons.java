@@ -89,6 +89,7 @@ public class MatchButtons extends LinearLayout {
                         fragment.data.getJSONObject("tele").put("climb", sm.teleClimbBox.isChecked());
                     } catch (JSONException e) {
                     }
+
                 } else if (fragment instanceof ScoutingNotesFragment) {
                     ScoutingNotesFragment sm = (ScoutingNotesFragment) fragment;
                     try {
@@ -102,6 +103,11 @@ public class MatchButtons extends LinearLayout {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                try {
+                    DataStore.updateTeamStats(fragment.data.getString("team_key"));
+                } catch (JSONException e) {
+                }
+                DataStore.uploadMatchData();
             }
         });
         addView(saveButton);

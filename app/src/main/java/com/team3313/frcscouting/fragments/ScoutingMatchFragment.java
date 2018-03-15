@@ -13,8 +13,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.team3313.frcscouting.MainActivity;
-import com.team3313.frcscouting.components.NumberPicker;
 import com.team3313.frcscouting.components.MatchButtons;
+import com.team3313.frcscouting.components.NumberPicker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,21 +26,18 @@ import org.json.JSONObject;
  */
 public class ScoutingMatchFragment extends ScoutingFragment {
 
-    LinearLayout linearLayout;
-    LinearLayout matchSep;
-    TableLayout autoLayout;
-    TableLayout teleLayout;
-
     public CheckBox autoSwitchBox;
     public CheckBox autoScaleBox;
     public CheckBox autoCrossBox;
-
     public NumberPicker scalePicker;
     public NumberPicker switchPicker;
     public NumberPicker exchangePicker;
     public CheckBox teleClimbBox;
+    LinearLayout linearLayout;
+    LinearLayout matchSep;
+    TableLayout autoLayout;
+    TableLayout teleLayout;
     // TODO: Rename and change types of parameters
-
 
     /**
      * Use this factory method to create a new instance of
@@ -52,6 +49,11 @@ public class ScoutingMatchFragment extends ScoutingFragment {
     public static ScoutingMatchFragment newInstance(JSONObject start) {
         ScoutingMatchFragment fragment = new ScoutingMatchFragment();
         fragment.data = start;
+        try {
+            fragment.data.put("updated", true);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return fragment;
     }
 

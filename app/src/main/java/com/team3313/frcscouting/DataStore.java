@@ -46,7 +46,7 @@ public class DataStore {
                     for (int i = 0; i < r.length(); i++) {
                         sort.add(r.getString(i));
                     }
-                    Collections.sort(sort);
+                    Collections.sort(sort, new TeamNumberComparator());
                     for (final String s : sort) {
                         RESTGetter.HttpsRequestTask team = null;
                         team = new RESTGetter.HttpsRequestTask("https://team3313.com/teams/" + s) {
@@ -191,11 +191,10 @@ public class DataStore {
         writeToFile(config.toString(), "config.json");
     }
 
-    public static String getTeamField(String teamKey, String key, Class clazz) {
+    public static String getTeamField(String teamKey, String key) {
         try {
-            if (clazz == String.class) {
-                return teamData.getJSONObject(teamKey).getString(key);
-            }
+            return teamData.getJSONObject(teamKey).getString(key);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -262,16 +261,19 @@ public class DataStore {
     }
 
     public static void uploadMatchData() {
-        for (JSONObject item : matchData.values()) {
+        for (final JSONObject item : matchData.values()) {
             try {
                 if (item.getBoolean("updated")) {
                     JSONObject toUpload = new JSONObject(item.toString());
                     toUpload.remove("updated");
-                    RESTGetter.HttpsSubmitTask t = new RESTGetter.HttpsSubmitTask("https://team3313.com/scouting/pit/frc3313", toUpload.toString()) {
+                    System.out.println("Attempting upload:" + toUpload.getString("match_key") + "/" + toUpload.getString("team_key"));
+                    final RESTGetter.HttpsSubmitTask t = new RESTGetter.HttpsSubmitTask("https://team3313.com/scouting/match/" + toUpload.getString("match_key") + "/" + toUpload.getString("team_key"), toUpload.toString()) {
 
                         @Override
                         protected void customEnd(String r) {
-                            System.out.println(r);
+                            if (!r.startsWith("fail")) {
+                                item.remove("updated");
+                            }
                         }
                     };
                     t.execute("Authentication:yT^#N*X#I&XNFfin3 fGISfmeygfai8mfgm6i*64m8I6GMO863I8");
@@ -294,4 +296,63 @@ public class DataStore {
         writeToFile(saveMatches.toString(), "match-data.json");
 
     }
+
+    public static void updateTeamStats(String teamKey) {
+        System.out.println("Updating stats for " + teamKey);
+        try {
+            JSONObject teamObject = teamData.getJSONObject(teamKey);
+
+            double scale = 0;
+            double swth = 0;
+            double exchange = 0;
+            int climb = 0;
+            int cross = 0;
+            int correct = 0;
+            int played = 0;
+            for (JSONObject match : matchData.values()) {
+                if (match.getString("team_key").equalsIgnoreCase(teamKey)) {
+
+                    System.out.println(match.toString());
+                    played++;
+                    JSONObject auto = match.getJSONObject("auto");
+                    JSONObject tele = match.getJSONObject("tele");
+
+                    if (auto.getBoolean("passedLine")) {
+                        cross++;
+                    }
+                    if (auto.getBoolean("switch") || auto.getBoolean("scale")) {
+                        correct++;
+                    }
+                    if (tele.getBoolean("climb")) {
+                        climb++;
+                    }
+                    scale += tele.getInt("scale");
+                    swth += tele.getInt("switch");
+                    exchange += tele.getInt("exchange");
+                }
+            }
+
+            teamObject.put("scale", scale / played);
+            teamObject.put("switch", swth / played);
+            teamObject.put("exchange", exchange / played);
+            teamObject.put("played", played);
+
+
+            teamObject.put("climb", climb / played * 100);
+            teamObject.put("cross", cross / played * 100);
+            teamObject.put("correct", correct / played * 100);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static class TeamNumberComparator implements Comparator<String> {
+        @Override
+        public int compare(String o1, String o2) {
+            int first = Integer.decode(o1.substring(3));
+            int second = Integer.decode(o2.substring(3));
+            return first - second;
+        }
+    }
+
 }
