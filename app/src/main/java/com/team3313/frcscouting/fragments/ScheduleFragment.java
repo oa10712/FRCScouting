@@ -25,7 +25,7 @@ public class ScheduleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getActivity().setTitle("Schedule for " + ((MainActivity) getActivity()).getActiveRegional());
 
-        return new MatchList(getContext(), DataStore.matchData);
+        return new MatchList(getContext(), DataStore.scheduleData);
     }
 
     /*

@@ -2,6 +2,7 @@ package com.team3313.frcscouting.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,12 +67,16 @@ public class TeamDataFragment extends TeamFragment {
         gridLayout.setRowCount(4);
         gridLayout.setColumnCount(5);
 
+        GridLayout.LayoutParams defPars = new GridLayout.LayoutParams();
+        defPars.setGravity(Gravity.BOTTOM);
+
         ImageView botImage = new ImageView(getContext());
         botImage.setImageResource(R.drawable.ic_menu_camera);
         GridLayout.LayoutParams params =
                 new GridLayout.LayoutParams();
         params.rowSpec = GridLayout.spec(0, 2);
         params.columnSpec = GridLayout.spec(0, 1);
+        params.setGravity(Gravity.BOTTOM);
         botImage.setLayoutParams(params);
         gridLayout.addView(botImage);
 

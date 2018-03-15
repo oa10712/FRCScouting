@@ -1,12 +1,12 @@
 package com.team3313.frcscouting.components;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.team3313.frcscouting.DataStore;
 import com.team3313.frcscouting.MainActivity;
 import com.team3313.frcscouting.R;
 import com.team3313.frcscouting.fragments.ScoutingFragment;
@@ -69,5 +69,41 @@ public class MatchButtons extends LinearLayout {
             notesButton.setEnabled(false);
         }
         addView(notesButton);
+
+        Button saveButton = new Button(fragment.getContext());
+        saveButton.setText(R.string.saveMatchButton);
+        saveButton.setHighlightColor(getResources().getColor(R.color.colorAccent));
+        saveButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fragment instanceof ScoutingMatchFragment) {
+                    ScoutingMatchFragment sm = (ScoutingMatchFragment) fragment;
+                    try {
+                        fragment.data.getJSONObject("auto").put("switch", sm.autoSwitchBox.isChecked());
+                        fragment.data.getJSONObject("auto").put("scale", sm.autoScaleBox.isChecked());
+                        fragment.data.getJSONObject("auto").put("passedLine", sm.autoCrossBox.isChecked());
+
+                        fragment.data.getJSONObject("tele").put("scale", sm.scalePicker.getValue());
+                        fragment.data.getJSONObject("tele").put("switch", sm.switchPicker.getValue());
+                        fragment.data.getJSONObject("tele").put("exchange", sm.exchangePicker.getValue());
+                        fragment.data.getJSONObject("tele").put("climb", sm.teleClimbBox.isChecked());
+                    } catch (JSONException e) {
+                    }
+                } else if (fragment instanceof ScoutingNotesFragment) {
+                    ScoutingNotesFragment sm = (ScoutingNotesFragment) fragment;
+                    try {
+                        sm.data.put("notes", sm.editText.getText());
+                    } catch (JSONException e) {
+                    }
+                }
+
+                try {
+                    DataStore.matchData.put(fragment.data.getString("match_key"), fragment.data.getString("team_key"), fragment.data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        addView(saveButton);
     }
 }

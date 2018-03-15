@@ -3,6 +3,7 @@ package com.team3313.frcscouting;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -32,6 +33,28 @@ public class MainActivity extends AppCompatActivity {
     public static MainActivity instance;
     Toolbar toolbar;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+    private int mInterval = 5000; // 15 seconds by default, can be changed later
+    private Handler mHandler;
+    Runnable mStatusChecker = new Runnable() {
+        boolean first = true;
+
+        @Override
+        public void run() {
+            System.out.println("Running task");
+            if (!first) {
+                try {
+                    DataStore.autoSave(); //this function can change value of mInterval.
+                } finally {
+                    // 100% guarantee that this always happens, even if
+                    // your update method throws an exception
+                    mHandler.postDelayed(mStatusChecker, mInterval);
+                }
+            } else {
+                first = false;
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -79,6 +102,11 @@ public class MainActivity extends AppCompatActivity {
 // finally change the color
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         instance = this;
+
+
+        mHandler = new Handler();
+
+        startRepeatingTask();
     }
 
     @Override
@@ -132,6 +160,20 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.e("MainActivity", "Error in creating fragment");
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopRepeatingTask();
+    }
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
 
     @Override

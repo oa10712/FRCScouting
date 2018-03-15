@@ -2,6 +2,7 @@ package com.team3313.frcscouting.components;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.View;
@@ -71,15 +72,18 @@ public class MatchList extends LinearLayout {
                         @Override
                         public void onClick(View v) {
                             TableRow row = (TableRow) v;
-                            TextView match = (TextView) row.getChildAt(0);
-                            TextView team = null;
+                            TextViewExtra match = (TextViewExtra) row.getChildAt(0);
+                            TextViewExtra team = null;
                             try {
-                                team = (TextView) row.getChildAt(DataStore.config.getInt("station") + 1);
+                                team = (TextViewExtra) row.getChildAt(DataStore.config.getInt("station") + 1);
                             } catch (JSONException e) {
                             }
                             JSONObject start = null;
                             try {
-                                start = new JSONObject("{\"match_key\":\"" + match.getText() + "\",\"team_key\":\"" + team.getText() + "\",\"auto\":{\"passedLine\":false,\"switch\":false,\"scale\":false},\"tele\":{\"switch\":0,\"scale\":0,\"exchange\":0,\"climb\":false},\"notes\":\"\"}");
+                                start = DataStore.matchData.get(match.data, team.data);
+                                if (start == null) {
+                                    start = new JSONObject("{\"match_key\":\"" + match.data + "\",\"team_key\":\"" + team.data + "\",\"auto\":{\"passedLine\":false,\"switch\":false,\"scale\":false},\"tele\":{\"switch\":0,\"scale\":0,\"exchange\":0,\"climb\":false},\"notes\":\"\"}");
+                                }
                             } catch (JSONException e) {
                             }
                             FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
@@ -87,32 +91,43 @@ public class MatchList extends LinearLayout {
                         }
                     });
 
-                    TextView matchName = new TextView(getContext());
-                    matchName.setText(match.getString("key"));
+                    TextViewExtra matchName = new TextViewExtra(getContext(), match.getString("key").split("_")[1], match.getString("key"));
                     matchRow.addView(matchName);
 
-                    TextView red1 = new TextView(getContext());
-                    red1.setText(red.getString(0));
+                    TextViewExtra red1 = new TextViewExtra(getContext(), red.getString(0).substring(3), red.getString(0));
+                    if (DataStore.matchData.get(match.getString("key"), red.getString(0)) != null) {
+                        red1.setTypeface(null, Typeface.BOLD_ITALIC);
+                    }
                     matchRow.addView(red1);
 
-                    TextView red2 = new TextView(getContext());
-                    red2.setText(red.getString(1));
+                    TextViewExtra red2 = new TextViewExtra(getContext(), red.getString(1).substring(3), red.getString(1));
+                    if (DataStore.matchData.get(match.getString("key"), red.getString(1)) != null) {
+                        red2.setTypeface(null, Typeface.BOLD_ITALIC);
+                    }
                     matchRow.addView(red2);
 
-                    TextView red3 = new TextView(getContext());
-                    red3.setText(red.getString(2));
+                    TextViewExtra red3 = new TextViewExtra(getContext(), red.getString(2).substring(3), red.getString(2));
+                    if (DataStore.matchData.get(match.getString("key"), red.getString(2)) != null) {
+                        red3.setTypeface(null, Typeface.BOLD_ITALIC);
+                    }
                     matchRow.addView(red3);
 
-                    TextView blue1 = new TextView(getContext());
-                    blue1.setText(blue.getString(0));
+                    TextViewExtra blue1 = new TextViewExtra(getContext(), blue.getString(0).substring(3), blue.getString(0));
+                    if (DataStore.matchData.get(match.getString("key"), blue.getString(0)) != null) {
+                        blue1.setTypeface(null, Typeface.BOLD_ITALIC);
+                    }
                     matchRow.addView(blue1);
 
-                    TextView blue2 = new TextView(getContext());
-                    blue2.setText(blue.getString(1));
+                    TextViewExtra blue2 = new TextViewExtra(getContext(), blue.getString(1).substring(3), blue.getString(1));
+                    if (DataStore.matchData.get(match.getString("key"), blue.getString(1)) != null) {
+                        blue2.setTypeface(null, Typeface.BOLD_ITALIC);
+                    }
                     matchRow.addView(blue2);
 
-                    TextView blue3 = new TextView(getContext());
-                    blue3.setText(blue.getString(2));
+                    TextViewExtra blue3 = new TextViewExtra(getContext(), blue.getString(2).substring(3), blue.getString(2));
+                    if (DataStore.matchData.get(match.getString("key"), blue.getString(2)) != null) {
+                        blue3.setTypeface(null, Typeface.BOLD_ITALIC);
+                    }
                     matchRow.addView(blue3);
 
                     matchTable.addView(matchRow);
