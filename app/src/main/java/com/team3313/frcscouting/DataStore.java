@@ -308,7 +308,7 @@ public class DataStore {
             int climb = 0;
             int cross = 0;
             int correct = 0;
-            int played = 0;
+            double played = 0;
             for (JSONObject match : matchData.values()) {
                 if (match.getString("team_key").equalsIgnoreCase(teamKey)) {
 
