@@ -307,7 +307,8 @@ public class DataStore {
             double exchange = 0;
             int climb = 0;
             int cross = 0;
-            int correct = 0;
+            int autoScale = 0;
+            int autoSwitch = 0;
             double played = 0;
             for (JSONObject match : matchData.values()) {
                 if (match.getString("team_key").equalsIgnoreCase(teamKey)) {
@@ -320,8 +321,11 @@ public class DataStore {
                     if (auto.getBoolean("passedLine")) {
                         cross++;
                     }
-                    if (auto.getBoolean("switch") || auto.getBoolean("scale")) {
-                        correct++;
+                    if (auto.getBoolean("switch")) {
+                        autoSwitch++;
+                    }
+                    if (auto.getBoolean("scale")) {
+                        autoScale++;
                     }
                     if (tele.getBoolean("climb")) {
                         climb++;
@@ -338,9 +342,10 @@ public class DataStore {
             teamObject.put("played", played);
 
 
-            teamObject.put("climb", climb / played * 100);
-            teamObject.put("cross", cross / played * 100);
-            teamObject.put("correct", correct / played * 100);
+            teamObject.put("climb", climb / played);
+            teamObject.put("cross", cross / played);
+            teamObject.put("autoScale", autoScale / played);
+            teamObject.put("autoSwitch", autoSwitch / played);
         } catch (JSONException e) {
             e.printStackTrace();
         }

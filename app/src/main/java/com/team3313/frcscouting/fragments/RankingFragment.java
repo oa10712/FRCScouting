@@ -22,7 +22,7 @@ import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 
 
 public class RankingFragment extends Fragment {
-    private static final String[] TABLE_HEADERS = {"Team Number", "Qualification Points", "Auto Formula", "Tele Formula", "Overall Formula"};
+    private static final String[] TABLE_HEADERS = {"Team Number", "Formula"};
     SortableTableView<JSONObject> table;
 
     public RankingFragment() {
@@ -43,9 +43,10 @@ public class RankingFragment extends Fragment {
         }
         table = new SortableTableView<JSONObject>(getContext());
         table.setHeaderAdapter(new SimpleTableHeaderAdapter(getContext(), TABLE_HEADERS));
-        table.setColumnCount(5);
+        table.setColumnCount(2);
         table.setDataAdapter(new TeamTableDataAdapter(getContext(), teams));
         table.setColumnComparator(0, new TeamNumberComparator());
+        table.setColumnComparator(1, new TeamOverallScoreComparator());
 
         return table;
     }
@@ -58,6 +59,20 @@ public class RankingFragment extends Fragment {
                 int first = Integer.decode(o1.getString("number").substring(3));
                 int second = Integer.decode(o2.getString("number").substring(3));
                 return first - second;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return 0;
+        }
+    }
+
+    public class TeamOverallScoreComparator implements java.util.Comparator<JSONObject> {
+        @Override
+        public int compare(JSONObject o1, JSONObject o2) {
+            try {
+                double first = TeamTableDataAdapter.getOverallScore(o1);
+                double second = TeamTableDataAdapter.getOverallScore(o2);
+                return (int) (first * 100 - second * 100);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

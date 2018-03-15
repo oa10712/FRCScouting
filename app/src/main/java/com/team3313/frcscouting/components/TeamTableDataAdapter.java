@@ -29,15 +29,6 @@ public class TeamTableDataAdapter extends TableDataAdapter<JSONObject> {
                 renderedView = renderTeamNumber(team);
                 break;
             case 1:
-                renderedView = renderQP(team);
-                break;
-            case 2:
-                renderedView = renderAuto(team);
-                break;
-            case 3:
-                renderedView = renderTele(team);
-                break;
-            case 4:
                 renderedView = renderOverall(team);
                 break;
         }
@@ -47,27 +38,25 @@ public class TeamTableDataAdapter extends TableDataAdapter<JSONObject> {
 
     private View renderOverall(JSONObject team) {
         TextView view = new TextView(getContext());
-        view.setText("Formale Value");
+        try {
+            double score = getOverallScore(team);
+            view.setText(score + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return view;
     }
 
-    private View renderTele(JSONObject team) {
-        TextView view = new TextView(getContext());
-        view.setText("Formale Value");
-        return view;
+    public static double getOverallScore(JSONObject team) throws JSONException {
+        return 10.87 * team.getDouble("scale")
+                + 75 * team.getDouble("climb")
+                + 9.82 * team.getDouble("exchange")
+                + 5.6 * team.getDouble("switch")
+                + 200 * team.getDouble("autoScale")
+                + 23 * team.getDouble("autoSwitch")
+                + 5.4 * team.getDouble("cross");
     }
 
-    private View renderAuto(JSONObject team) {
-        TextView view = new TextView(getContext());
-        view.setText("Formale Value");
-        return view;
-    }
-
-    private View renderQP(JSONObject team) {
-        TextView view = new TextView(getContext());
-        view.setText("N/A");
-        return view;
-    }
 
     private View renderTeamNumber(JSONObject team) {
         TextView view = new TextView(getContext());

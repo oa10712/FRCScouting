@@ -133,7 +133,7 @@ public class TeamDataFragment extends TeamFragment {
 
         TextView climbVal = new TextView(getContext());
         try {
-            climbVal.setText(teamInfo.getDouble("climb") + "%");
+            climbVal.setText(teamInfo.getDouble("climb")*100 + "%");
         } catch (JSONException e) {
             climbVal.setText("0%");
         }
@@ -165,7 +165,7 @@ public class TeamDataFragment extends TeamFragment {
 
         TextView crossVal = new TextView(getContext());
         try {
-            crossVal.setText(teamInfo.getDouble("cross") + "%");
+            crossVal.setText(teamInfo.getDouble("cross")*100 + "%");
         } catch (JSONException e) {
             crossVal.setText("0%");
         }
@@ -173,7 +173,7 @@ public class TeamDataFragment extends TeamFragment {
 
         TextView correctVal = new TextView(getContext());
         try {
-            correctVal.setText(teamInfo.getDouble("correct") + "%");
+            correctVal.setText(teamInfo.getDouble("autoSwitch") + "%");
         } catch (JSONException e) {
             correctVal.setText("0%");
         }
