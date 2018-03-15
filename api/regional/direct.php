@@ -1,5 +1,7 @@
 <?php
-if($routes[2] == "update"){
+if($routes[2] == "match_data"){
+	include "retrieveMatches.php";
+}else if($routes[2] == "update"){
 	include "regionalUpdate.php";
 } else if($routes[2] == "schedule") {
 	include "schedule.php";
