@@ -153,6 +153,8 @@ public class DataStore {
     }
 
     public static void manualRefresh() {
+        uploadMatchData();
+
         getScheduleGetter().execute();
 
         getTeamGetter().execute("X-TBA-Auth-Key:IdxoRao9PllsmPXPcOq9lcNU3o3zQAN6Tg3gflC9VCw1Wvj4pfqzV1Gmfiks0T9o");

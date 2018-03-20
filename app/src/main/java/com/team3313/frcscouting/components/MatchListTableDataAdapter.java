@@ -139,6 +139,7 @@ class MatchListTableDataAdapter extends TableDataAdapter<JSONObject> {
                         start = new JSONObject("{\"match_key\":\"" + match.getString("key") + "\",\"team_key\":\"" + team + "\",\"auto\":{\"passedLine\":false,\"switch\":false,\"scale\":false},\"tele\":{\"switch\":0,\"scale\":0,\"exchange\":0,\"climb\":false},\"notes\":\"\"}");
                     }
                 } catch (JSONException e) {
+                    e.printStackTrace();
                 }
                 FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, ScoutingMatchFragment.newInstance(start)).commit();

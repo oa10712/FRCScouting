@@ -1,9 +1,15 @@
 package com.team3313.frcscouting.components;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.team3313.frcscouting.MainActivity;
+import com.team3313.frcscouting.R;
+import com.team3313.frcscouting.fragments.TeamDataFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,8 +27,8 @@ public class TeamTableDataAdapter extends TableDataAdapter<JSONObject> {
 
     @Override
     public View getCellView(int rowIndex, int columnIndex, ViewGroup parentView) {
-        JSONObject team = getRowData(rowIndex);
-        View renderedView = null;
+        final JSONObject team = getRowData(rowIndex);
+        TextView renderedView = null;
 
         switch (columnIndex) {
             case 0:
@@ -32,15 +38,30 @@ public class TeamTableDataAdapter extends TableDataAdapter<JSONObject> {
                 renderedView = renderOverall(team);
                 break;
         }
-
+        renderedView.setGravity(Gravity.CENTER_VERTICAL);
+        renderedView.setMinimumHeight(65);
+        renderedView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = null;
+                try {
+                    number = team.getString("number");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                FragmentManager fragmentManager = MainActivity.instance.getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, TeamDataFragment.newInstance(number)).commit();
+            }
+        });
         return renderedView;
     }
 
-    private View renderOverall(JSONObject team) {
+    private TextView renderOverall(JSONObject team) {
         TextView view = new TextView(getContext());
         try {
-            double score = getOverallScore(team);
-            view.setText(score + "");
+            double score = (int) (getOverallScore(team) * 100);
+
+            view.setText(score / 100 + "");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -58,7 +79,7 @@ public class TeamTableDataAdapter extends TableDataAdapter<JSONObject> {
     }
 
 
-    private View renderTeamNumber(JSONObject team) {
+    private TextView renderTeamNumber(JSONObject team) {
         TextView view = new TextView(getContext());
         try {
             view.setText(team.getString("number").substring(3));

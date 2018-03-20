@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.codecrafters.tableview.SortableTableView;
+import de.codecrafters.tableview.SortingOrder;
 import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 import de.codecrafters.tableview.toolkit.TableDataRowBackgroundProviders;
 
@@ -54,6 +55,8 @@ public class RankingFragment extends Fragment {
         table.setDataRowBackgroundProvider(TableDataRowBackgroundProviders.alternatingRowColors(getResources().getColor(R.color.colorAltRow), Color.WHITE));
 
         table.setHeaderBackgroundColor(getResources().getColor(R.color.colorAccent));
+
+        table.sort(1, SortingOrder.DESCENDING);
         return table;
     }
 

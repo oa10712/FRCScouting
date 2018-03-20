@@ -76,7 +76,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
         TableRow saveRow = new TableRow(getContext());
         Button saveButton = new Button(getActivity());
-        saveButton.setText("Save changes");
+        saveButton.setText("Save Config");
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
