@@ -4,6 +4,7 @@ package com.team3313.frcscouting.fragments;
  * Created by oa10712 on 3/7/2018.
  */
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.team3313.frcscouting.DataStore;
+import com.team3313.frcscouting.R;
 import com.team3313.frcscouting.components.TeamTableDataAdapter;
 
 import org.json.JSONArray;
@@ -19,6 +21,7 @@ import org.json.JSONObject;
 
 import de.codecrafters.tableview.SortableTableView;
 import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
+import de.codecrafters.tableview.toolkit.TableDataRowBackgroundProviders;
 
 
 public class RankingFragment extends Fragment {
@@ -47,6 +50,8 @@ public class RankingFragment extends Fragment {
         table.setDataAdapter(new TeamTableDataAdapter(getContext(), teams));
         table.setColumnComparator(0, new TeamNumberComparator());
         table.setColumnComparator(1, new TeamOverallScoreComparator());
+
+        table.setDataRowBackgroundProvider(TableDataRowBackgroundProviders.alternatingRowColors(getResources().getColor(R.color.colorAltRow), Color.WHITE));
 
         return table;
     }
