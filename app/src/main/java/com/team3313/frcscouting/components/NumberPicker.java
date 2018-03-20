@@ -168,7 +168,7 @@ public class NumberPicker extends LinearLayout {
         valueText.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
         valueText.setText(value.toString());
         valueText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        valueText.setFilters(new InputFilter[]{new InputFilterMinMax(0, 999)});
+        valueText.setFilters(new InputFilter[]{new InputFilterMinMax(MINIMUM, MAXIMUM)});
     }
 
     private void initDecrementButton(Context context) {
