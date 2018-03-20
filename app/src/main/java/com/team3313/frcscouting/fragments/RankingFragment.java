@@ -4,6 +4,7 @@ package com.team3313.frcscouting.fragments;
  * Created by oa10712 on 3/7/2018.
  */
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.team3313.frcscouting.DataStore;
+import com.team3313.frcscouting.R;
 import com.team3313.frcscouting.components.TeamTableDataAdapter;
 
 import org.json.JSONArray;
@@ -19,10 +21,11 @@ import org.json.JSONObject;
 
 import de.codecrafters.tableview.SortableTableView;
 import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
+import de.codecrafters.tableview.toolkit.TableDataRowBackgroundProviders;
 
 
 public class RankingFragment extends Fragment {
-    private static final String[] TABLE_HEADERS = {"Team Number", "Formula"};
+    private static final String[] TABLE_HEADERS = {"Team Number", "Ranking Score"};
     SortableTableView<JSONObject> table;
 
     public RankingFragment() {
@@ -41,13 +44,16 @@ public class RankingFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-        table = new SortableTableView<JSONObject>(getContext());
+        table = new SortableTableView<>(getContext());
         table.setHeaderAdapter(new SimpleTableHeaderAdapter(getContext(), TABLE_HEADERS));
         table.setColumnCount(2);
         table.setDataAdapter(new TeamTableDataAdapter(getContext(), teams));
         table.setColumnComparator(0, new TeamNumberComparator());
         table.setColumnComparator(1, new TeamOverallScoreComparator());
 
+        table.setDataRowBackgroundProvider(TableDataRowBackgroundProviders.alternatingRowColors(getResources().getColor(R.color.colorAltRow), Color.WHITE));
+
+        table.setHeaderBackgroundColor(getResources().getColor(R.color.colorAccent));
         return table;
     }
 
