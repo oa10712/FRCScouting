@@ -9,6 +9,7 @@
     <string name="button_name">a</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="saveMatchButton">Save Match Data</string>
+    <string name="startup_info">General startup info goes here</string>
     <string-array name="navigation_drawer_items_array">
         <item>Schedule</item>
         <item>Team List</item>

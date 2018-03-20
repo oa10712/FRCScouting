@@ -28,6 +28,7 @@ import com.team3313.frcscouting.drawer.DrawerItemCustomAdapter;
 import com.team3313.frcscouting.fragments.RankingFragment;
 import com.team3313.frcscouting.fragments.ScheduleFragment;
 import com.team3313.frcscouting.fragments.SettingsFragment;
+import com.team3313.frcscouting.fragments.StartupFragment;
 import com.team3313.frcscouting.fragments.TeamListFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -109,6 +110,10 @@ public class MainActivity extends AppCompatActivity {
         mHandler = new Handler();
 
         startRepeatingTask();
+
+        Fragment fragment = new StartupFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
     }
 
     @Override

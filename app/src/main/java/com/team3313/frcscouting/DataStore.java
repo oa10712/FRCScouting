@@ -89,7 +89,16 @@ public class DataStore {
         return new RESTGetter.HttpsRequestTaskArray("https://www.team3313.com/regional/" + MainActivity.instance.getActiveRegional() + "/match_data") {
             @Override
             protected void customEnd(JSONArray r) {
-
+                System.out.println(r.toString());
+                for (int i = 0; i < r.length(); i++) {
+                    JSONObject item = null;
+                    try {
+                        item = r.getJSONObject(i);
+                        matchData.put(item.getString("match_key"), item.getString("team_key"), item);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         };
     }
@@ -140,12 +149,15 @@ public class DataStore {
                 e.printStackTrace();
             }
         }
+        getMatchDataGetter().execute();
     }
 
     public static void manualRefresh() {
         getScheduleGetter().execute();
 
         getTeamGetter().execute("X-TBA-Auth-Key:IdxoRao9PllsmPXPcOq9lcNU3o3zQAN6Tg3gflC9VCw1Wvj4pfqzV1Gmfiks0T9o");
+
+        getMatchDataGetter().execute();
     }
 
     private static void writeToFile(String data, String filename) {
