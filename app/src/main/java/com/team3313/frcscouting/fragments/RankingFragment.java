@@ -25,7 +25,7 @@ import de.codecrafters.tableview.toolkit.TableDataRowBackgroundProviders;
 
 
 public class RankingFragment extends Fragment {
-    private static final String[] TABLE_HEADERS = {"Team Number", "Formula"};
+    private static final String[] TABLE_HEADERS = {"Team Number", "Ranking Score"};
     SortableTableView<JSONObject> table;
 
     public RankingFragment() {
@@ -44,7 +44,7 @@ public class RankingFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-        table = new SortableTableView<JSONObject>(getContext());
+        table = new SortableTableView<>(getContext());
         table.setHeaderAdapter(new SimpleTableHeaderAdapter(getContext(), TABLE_HEADERS));
         table.setColumnCount(2);
         table.setDataAdapter(new TeamTableDataAdapter(getContext(), teams));
@@ -53,6 +53,7 @@ public class RankingFragment extends Fragment {
 
         table.setDataRowBackgroundProvider(TableDataRowBackgroundProviders.alternatingRowColors(getResources().getColor(R.color.colorAltRow), Color.WHITE));
 
+        table.setHeaderBackgroundColor(getResources().getColor(R.color.colorAccent));
         return table;
     }
 
