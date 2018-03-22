@@ -349,13 +349,13 @@ public class DataStore {
                     exchange += tele.getInt("exchange");
                 }
             }
+            teamObject.put("played", played);
             if (played == 0) {
-                played = 1;
+                played = 1;// this is for /0 errors
             }
             teamObject.put("scale", scale / played);
             teamObject.put("switch", swth / played);
             teamObject.put("exchange", exchange / played);
-            teamObject.put("played", played);
 
 
             teamObject.put("climb", climb / played);

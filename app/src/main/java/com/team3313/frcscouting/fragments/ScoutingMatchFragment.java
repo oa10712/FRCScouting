@@ -79,8 +79,8 @@ public class ScoutingMatchFragment extends ScoutingFragment {
         linearLayout.addView(buttonRow);
 
         tableHolder = new TableLayout(getContext());
-        tableHolder.setColumnStretchable(1, true);
-        tableHolder.setColumnStretchable(4, true);
+        tableHolder.setColumnStretchable(2, true);
+        tableHolder.setColumnStretchable(5, true);
 
 
         TableRow labelRow = new TableRow(getContext());
@@ -101,6 +101,8 @@ public class ScoutingMatchFragment extends ScoutingFragment {
         params.gravity = Gravity.CENTER_HORIZONTAL;
         teleLabel.setLayoutParams(params);
         labelRow.addView(teleLabel);
+
+        labelRow.addView(new Space(getContext()));
 
         tableHolder.addView(labelRow);
 
