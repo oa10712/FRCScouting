@@ -60,7 +60,7 @@ public class ScoutingMatchFragment extends ScoutingFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        MainActivity.instance.setTitle("Match " + getData("match_key", String.class) + " - Watching " + getData("team_key", String.class));
+        MainActivity.instance.setTitle(getData("match_key", String.class).split("_")[1].replace("qm", "Qualifier Match ") + " - Watching Team " + getData("team_key", String.class).substring(3));
         linearLayout = new LinearLayout(getActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 

@@ -1,5 +1,6 @@
 package com.team3313.frcscouting;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -240,9 +243,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String getActiveRegional() {
-        return "2018ndgf";
+        return getActiveRegional(false);
     }
 
+    public String getActiveRegional(boolean humanReadable) {
+        if (humanReadable) {
+            return "Great Northern 2018";
+        } else {
+            return "2018ndgf";
+        }
+    }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 

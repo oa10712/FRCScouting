@@ -63,15 +63,17 @@ public class TeamNotesFragment extends TeamFragment {
         for (JSONObject item : DataStore.matchData.values()) {
             try {
                 if (item.getString("team_key").equalsIgnoreCase(teamKey)) {
-                    TextView label = new TextView(getContext());
-                    label.setText(item.getString("match_key").split("_")[1]);
-                    label.setTypeface(null, Typeface.BOLD);
-                    label.setTextSize(20);
-                    linearLayout.addView(label);
+                    if (item.getString("notes") != null && !item.getString("notes").equalsIgnoreCase("")) {
+                        TextView label = new TextView(getContext());
+                        label.setText(item.getString("match_key").split("_")[1]);
+                        label.setTypeface(null, Typeface.BOLD);
+                        label.setTextSize(20);
+                        linearLayout.addView(label);
 
-                    TextView notes = new TextView(getContext());
-                    notes.setText(item.getString("notes"));
-                    linearLayout.addView(notes);
+                        TextView notes = new TextView(getContext());
+                        notes.setText(item.getString("notes"));
+                        linearLayout.addView(notes);
+                    }
                 }
             } catch (JSONException e) {
             }
